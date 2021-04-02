@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEST=$HOME/Documents/Linux/DotFiles
+DEST=$HOME/Documents/Linux/home
 
 # *** COPY CONFIG FOLDER ***
 
