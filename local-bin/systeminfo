@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo
+
+nodename=$(uname -n)
+echo -e "\e[36m\e[1m NAME:\e[0m\t\t\e[1m$nodename\e[0m"
+
+distribution=$(lsb_release -d | awk -F: '{ print $2 }')
+echo -e "\e[36m\e[1m DISTRO:\e[0m$distribution"
+
+kernel=$(uname -r)
+echo -e "\e[36m\e[1m KERNEL:\e[0m\t$kernel"
+
+memory_info=$(free -m | awk 'NR==2{printf "%s / %s MB (%.2f%%)\n", $3,$2,$3*100/$2 }')
+echo -e "\e[36m\e[1m MEMORY USAGE:\e[0m\t$memory_info"
+
+disk_info=$(df -h / | awk 'NR==2{ printf "%s / %s (%s)", $3,$2,$5 }')
+echo -e "\e[36m\e[1m DISK(System):\e[0m\t$disk_info"
+
+uptime=$(uptime -p)
+echo -e "\e[36m\e[1m UPTIME:\e[0m\t$uptime"
+
+echo ____________________________________________
+echo

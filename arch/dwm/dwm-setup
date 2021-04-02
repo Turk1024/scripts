@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Set up variables
+# Just in case this script is run separately from the post-install script
+
+SCRIPTSDIR=$HOME/Documents/Gitrepos/scripts/arch
+DOTDIR=$HOME/Documents/Linux/DotFiles
+
+# Get required packages
+echo
+echo -e "\e[36m\e[1m SETTING UP DWM...\e[0m"
+echo
+echo " Getting packages..."
+sudo pacman -Syy > /dev/null
+sudo pacman -S --noconfirm --needed $(cat $SCRIPTSDIR/dwm/packages) > /dev/null
+
+# Install the patched version of libxft
+clear
+echo
+echo " Installing the patched version of libxft (libxft-bgra)"
+echo
+yay -S libxft-bgra
+
+# Compile suckless programs
+echo
+echo " Compiling..."
+sucklessutils=("dwm" "dwmblocks" "st" "dmenu")
+for s in ${sucklessutils[@]}; do
+    cp -r $DOTDIR/.config/$s $HOME/.config/
+    sudo make -C $HOME/.config/$s clean install > /dev/null
+done
+
+# Copy DWM start script
+sudo cp $HOME/.local/bin/dwm-start /usr/local/bin/
+sudo chmod +x /usr/local/bin/dwm-start
+
+# Set up desktop entry for display managers
+
+DTPATH=/usr/share/xsessions/
+DTFILE=dwm.desktop
+
+sudo mkdir -p $DTPATH
+sudo touch $DTPATH$DTFILE
+echo "[Desktop Entry]" > sudo tee -a $DTPATH$DTFILE
+echo "Encoding=UTF-8" | sudo tee -a $DTPATH$DTFILE
+echo "Name=DWM" | sudo tee -a $DTPATH$DTFILE
+echo "Exec=/usr/local/bin/dwm-start" | sudo tee -a $DTPATH$DTFILE
+echo "Type=Application" | sudo tee -a $DTPATH$DTFILE
+
+sudo chmod 0755 $DTPATH$DTFILE
+
+# Set up xinitrc and bash profile for autostart
+echo "exec dwm-start" > $HOME/.xinitrc
+echo "[[ \$(tty) == \"/dev/tty1\" ]] && exec startx" | tee -a $HOME/.bash_profile
+

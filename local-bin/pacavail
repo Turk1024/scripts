@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PACAVAIL=$(pacman -Qu | wc -l)
+
+if [[ $PACAVAIL != 0 ]]
+then
+    printf " 📦  $PACAVAIL"
+    notify-send "$PACAVAIL Updates Available" -u normal -i software-update-available-symbolic
+fi
+   
+

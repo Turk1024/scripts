@@ -1,0 +1,275 @@
+#!/bin/bash
+#       _             _       ___           _        _ _           
+#      / \   _ __ ___| |__   |_ _|_ __  ___| |_ __ _| | | ___ _ __ 
+#     / _ \ | '__/ __| '_ \   | || '_ \/ __| __/ _` | | |/ _ \ '__|
+#    / ___ \| | | (__| | | |  | || | | \__ \ || (_| | | |  __/ |   
+#   /_/   \_\_|  \___|_| |_| |___|_| |_|___/\__\__,_|_|_|\___|_|   
+#                                                                  
+# A script to aid in the installation of Arch Linux
+
+# Create special output
+function write() {
+    case $1 in
+        "bold") ANSI=1m;;       # Bold text
+        "heading") ANSI=36m;;   # Blue and bold
+        "success") ANSI=32m;;   # Green and bold
+        "error") ANSI=31m;;     # Red and bold
+    esac
+    cat << EOF
+
+    $(printf "\e[$ANSI\e[1m$2\e[0m\n")
+
+EOF
+}
+
+# Automatically partition the drive
+function auto_format() {
+    if [[ -d /sys/firmware/efi/efivars ]]; then
+        (
+        echo g      # Create GPT partition table
+    
+        # Create the EFI boot partition
+        echo n      # Create new partition
+        echo 1      # Partition 1
+        echo        # Accept default
+        echo +300M  # Make it 300 MB
+    
+        echo t      # Change partition type
+        echo 1      # EFI System partition
+    
+        # Create the swap partition
+        echo n      # Create new partition
+        echo 2      # Partition 2
+        echo        # Accept default
+        echo +2G    # Make it 2 GB
+    
+        echo t      # Change partition type
+        echo 2      # Partition 2
+        echo 19     # Linux swap partition
+    
+        # Create the system partition
+        echo n      # Create new partition
+        echo 3      # Partition 3
+        echo        # Accept default
+        echo        # Accept default
+    
+        echo w      # Write and quit
+        ) | fdisk /dev/$SYSDISK
+    
+        # Format the partitions
+        mkfs.vfat -F32 /dev/$SYSDISK\1
+        mkfs.ext4 /dev/$SYSDISK\3
+        mkswap /dev/$SYSDISK\2
+        swapon /dev/$SYSDISK\2
+    
+        # Mount the partitions
+        mount /dev/$SYSDISK\3 /mnt
+        mkdir -p /mnt/boot/efi
+        mount /dev/$SYSDISK\1 /mnt/boot/efi
+    
+    else
+        (
+        echo g      # Create GPT partition table
+    
+        # Create boot partition
+        echo n      # Create new partition
+        echo 1      # Partition 1
+        echo        # Accept default
+        echo +1M    # Make it 1 MB
+    
+        echo t      # Change partition type
+        echo 4      # BIOS boot
+    
+        # Create the swap partition
+        echo n      # Create new partition
+        echo 2      # Partition 2
+        echo        # Accept default
+        echo +2G    # Make it 2 GB
+    
+        echo t      # Change partition type
+        echo 2      # Partition 2
+        echo 19     # Linux swap partition
+    
+        # Create the system partition
+        echo n      # Create new partition
+        echo 3      # Partition 3
+        echo        # Accept default
+        echo        # Accept default
+    
+        echo w      # Write and exit
+        ) | fdisk /dev/$SYSDISK
+    
+        # Format the partition
+        mkfs.ext4 /dev/$SYSDISK\3
+        mkswap /dev/$SYSDISK\2
+        swapon /dev/$SYSDISK\2
+    
+        # Mount the partitions
+        mount /dev/$SYSDISK\3 /mnt
+    fi
+}
+
+# Get the system drive
+function get_system_drive() {
+    clear
+    write "heading" "   SYSTEM DISKS"
+    lsblk
+    while true; do
+        write "bold" "Which drive should we install Arch on?"
+        read -p "EXAMPLE sda:" SYSDISK
+        if [[ $(lsblk | grep $SYSDISK | wc -l) == 0 ]]; then
+            write "error" "$SYSDISK doesn't exist on the system"
+        else
+            break
+        fi
+    done
+}
+
+# BEGIN SCRIPT
+clear
+write "heading" "   *** ARCH INSTALLER SCRIPT ***"
+write "bold" "This script will assist in the installation of Arch Linux"
+while true; do
+    cat << EOF
+
+    [1] Continue and automatically partition the drive
+    [2] The drive is already mounted.  Just go
+    [3] Quit and manually partition the drive.  Rerun script to continue
+
+EOF
+    read -p " [?]:" option
+    case $option in
+        1) get_system_drive;auto_format;break;;
+        2) get_system_drive;break;;
+        3) exit 0;;
+        *) write "bold" "Please choose 1, 2, or 3:";;
+    esac
+done
+
+#  Begin installation
+clear
+
+# Decide which kernel to install
+
+write "bold" "Which kernel would you like to install?"
+cat << EOF
+
+    [1] Standard Kernel (Fly by the seat of my pants)
+    [2] LTS Kernel (More stable)
+    
+EOF
+while true; do
+    read -p "[?]:" option
+    case $option in
+        1) KERNEL="linux";break;;
+        2) KERNEL="linux-lts";break;;
+        *) write "bold" "Please choose 1 or 2:";;
+    esac
+done
+
+# Check if partition is mounted
+[[ -d /mnt/lost+found ]] || {
+    clear
+    write "error" "ERROR"
+    printf " No partition is mounted. Exiting.\n"
+    exit 0
+}
+
+# Get Hostname
+write "bold" " Create a hostname"
+read -p "Hostname:" HOSTNAME
+
+# Get root password
+write "bold" " Create a password for root:"
+while true; do
+    read -s -p "Type a password:" ROOTPASS
+    echo
+    read -s -p "Retype password:" REROOTPASS
+    echo
+    [[ $REROOTPASS == $ROOTPASS ]] && break || write "error" "Passwords don't match"
+    [[ -z $ROOTPASS ]] && write "error" "Password cannot be blank"
+done
+    
+# Create a user
+write "bold" " Create a user account"
+while true; do
+    read -p " Type a user name:" USER
+    [[ -z $USER ]] && write "error" "User name cannot be blank" || break
+done
+
+# Create a user password
+write "bold" " Create a password for $USER"
+while true; do 
+    read -s -p "Type a password:" USERPASS
+    echo
+    read -s -p "Retype password:" REUSERPASS
+    echo
+    [[ $REUSERPASS == $USERPASS ]] && break || write "error" "Passwords don't match"
+    [[ -z $USERPASS ]] && write "error" "Password cannot be blank"
+done
+
+# Get some information about the system
+if [[ $(lspci | grep NVIDIA | wc -l) != 0 ]]; then
+    if [[ $KERNEL == "linux" ]];then
+        NVIDIA="xf86-video-nouveau"
+    else
+        NVIDIA="nvidia-lts nvidia-utils"
+    fi
+fi
+
+[[ $(grep Intel /proc/cpuinfo | wc -l) != 0 ]] && UCODE="intel-ucode"
+[[ $(grep AMD /proc/cpuinfo | wc -l) != 0 ]] && UCODE="amd-ucode" 
+
+clear
+write "heading" " *** INSTALLING THE BASE SYSTEM ***"
+write "bold" "Please wait..."
+pacstrap /mnt base base-devel $KERNEL linux-firmware $NVIDIA $UCODE >> /dev/null
+
+write "success" "Base installation complete."
+
+# Generate fstab
+genfstab -U -p /mnt >> /mnt/etc/fstab
+
+# Set up file share mount points
+FILESERVER="192.168.1.4"
+FILESHARES=("Documents" "Pictures")
+for f in ${FILESHARES[@]}; do
+    echo "$FILESERVER:/mnt/POOL/$f   /home/$USER/$f  nfs defaults    0   0" >> /mnt/etc/fstab
+done
+
+# Create GRUB options
+if [[ -d /sys/firmware/efi/efivars ]]; then
+    GRUBCMD="--target=x86_64-efi --efi-directory=/boot/efi /dev/$SYSDISK"
+else
+    GRUBCMD="--target=i386-pc /dev/$SYSDISK"
+fi
+
+# chroot into system and set options
+clear
+write "heading" "   SETTING UP THE SYSTEM:"
+
+arch-chroot /mnt << EOT
+sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF_8 UTF-8/g' /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+ln -sf /usr/share/zoneinfo/US/Central /etc/localtime
+hwclock --systohc --utc
+sed -i 's/#Color/Color/g' /etc/pacman.conf
+echo $HOSTNAME > /etc/hostname
+echo "root:$ROOTPASS" | chpasswd > /dev/null
+useradd -m -g users -G wheel,storage,power $USER
+echo "$USER:$USERPASS" | chpasswd > /dev/null
+sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/ %wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
+pacman -Sy --noconfirm networkmanager grub os-prober efibootmgr > /dev/null
+systemctl enable NetworkManager
+grub-install $GRUBCMD
+grub-mkconfig -o /boot/grub/grub.cfg
+pacman -S --noconfirm nfs-utils openssh htop > /dev/null
+EOT
+
+umount -R /mnt
+clear
+write "success" "   ALL FINISHED!"
+write "bold" "You need to reboot the system."
+exit
+

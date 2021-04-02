@@ -1,0 +1,22 @@
+#!/bin/bash
+
+mkdir -p $HOME/logs
+
+day=$(date +"%B %d, %Y")
+wkday=$(date +"%a")
+logfile=$HOME/logs/backup_$(date +"%F").log
+
+echo $day > $logfile
+echo
+
+figlet Data Files >> $logfile
+
+if [[ $wkday == "Sun" ]];then
+	rm -rf $HOME/logs
+	mkdir -p $HOME/logs
+	rsync -av --delete /mnt/ /srv/backups >> $logfile
+else
+	rsync -av /mnt/ /srv/backups >> $logfile
+fi
+
+echo Complete. >> $logfile

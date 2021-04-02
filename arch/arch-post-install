@@ -1,0 +1,78 @@
+#!/bin/bash
+
+clear
+echo
+echo -e "\e[36m\e[1m *** POST INSTALLATION ***\e[0m"
+
+SCRIPTSDIR=$HOME/Documents/Gitrepos/scripts/arch
+DOTDIR=$HOME/Documents/Linux/DotFiles
+
+# Install some standard packages
+echo
+echo " Getting some standard packages..."
+sudo pacman -Syy > /dev/null
+sudo pacman -S --noconfirm --needed $(cat $SCRIPTSDIR/standard_packages) > /dev/null
+
+# Install Yay if it doesn't already exist
+if [[ -f "/usr/bin/yay" ]]; then
+    echo " Yay is already installed"
+else
+    echo
+    echo " Installing the AUR helper script..."
+    echo
+    git clone https://aur.archlinux.org/yay
+    cd yay
+    makepkg -si
+    cd ..
+    rm -rf yay
+fi
+
+# Get some standard software from the AUR
+clear
+echo
+echo " Getting some packages from the AUR"
+echo " This could take a bit of time..."
+yay -S --noconfirm --needed $(cat $SCRIPTSDIR/standard_aur_packages)
+clear
+
+# Copy general dotfiles to .config directory
+echo
+echo " Setting up local config files.."
+configs=("nvim" "ranger" "sxiv" "termite" "dunst")
+for c in ${configs[@]}; do
+    cp -r $DOTDIR/.config/$c $HOME/.config/ > /dev/null
+done
+cp $DOTDIR/.bashrc $HOME/ > /dev/null
+
+# Copy .local folder
+echo
+echo " Copying files to .local folder..."
+cp -r $DOTDIR/.local $HOME/ > /dev/null
+
+# Set up some services
+echo
+echo " Setting up some services..."
+sudo timedatectl set-ntp true > /dev/null
+services=("cronie" "cups" "reflector.timer")
+for d in ${services[@]}; do
+    sudo systemctl enable $d > /dev/null
+done
+pamixer --set-volume 50
+
+# Install a desktop environment
+clear
+source $SCRIPTSDIR/dwm/dwm-setup
+
+clear
+figlet ALL DONE
+echo
+echo " You need to reboot the system for safe operation."
+echo
+echo " 1. Reboot now"
+echo " 2. Exit"
+echo
+read sysboot
+case $sysboot in
+    1) reboot;;
+    2) exit 0;;
+esac

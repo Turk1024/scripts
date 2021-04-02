@@ -1,0 +1,7 @@
+#!/bin/bash
+
+sudo iscsiadm --mode discovery --portal 192.168.1.4 --type sendtargets
+sudo iscsiadm -m node --targetname=iqn.2020-05.turknet.com:lun1 --login
+sudo mkdir -p /opt/iscsi
+sleep 5
+sudo mount /dev/sdc1 /opt/iscsi
