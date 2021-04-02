@@ -4,8 +4,8 @@ clear
 echo
 echo -e "\e[36m\e[1m *** POST INSTALLATION ***\e[0m"
 
-SCRIPTSDIR=$HOME/Documents/Gitrepos/scripts/arch
-DOTDIR=$HOME/Documents/Linux/DotFiles
+SCRIPTSDIR=$HOME/Documents/scripts/arch
+DOTDIR=$HOME/Documents/Linux/home
 
 # Install some standard packages
 echo

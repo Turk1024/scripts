@@ -3,8 +3,8 @@
 # Set up variables
 # Just in case this script is run separately from the post-install script
 
-SCRIPTSDIR=$HOME/Documents/Gitrepos/scripts/arch
-DOTDIR=$HOME/Documents/Linux/DotFiles
+SCRIPTSDIR=$HOME/Documents/scripts/arch
+DOTDIR=$HOME/Documents/Linux/home
 
 # Get required packages
 echo
