@@ -2,6 +2,8 @@ alsa-utils
 cronie
 cups
 cups-pdf
+dnsmasq
+ebtables
 figlet
 foomatic-db-gutenprint-ppds
 freerdp
@@ -12,6 +14,7 @@ gvfs
 gvfs-goa
 htop
 libnotify
+libvirt
 lsb-release
 man
 mpv
@@ -27,5 +30,6 @@ reflector
 rsync
 ueberzug
 unzip
+virt-manager
 youtube-dl
 zip

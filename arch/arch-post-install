@@ -53,15 +53,12 @@ cp -r $DOTDIR/.local $HOME/ > /dev/null
 echo
 echo " Setting up some services..."
 sudo timedatectl set-ntp true > /dev/null
-services=("cronie" "cups" "reflector.timer")
+services=("cronie" "cups" "reflector.timer" "libvirtd")
 for d in ${services[@]}; do
     sudo systemctl enable $d > /dev/null
 done
 pamixer --set-volume 50
 
-# Install a desktop environment
-clear
-source $SCRIPTSDIR/dwm/dwm-setup
 
 clear
 figlet ALL DONE
