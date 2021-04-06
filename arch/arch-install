@@ -232,7 +232,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 
 # Set up file share mount points
 FILESERVER="192.168.1.4"
-FILESHARES=("Documents" "Pictures")
+FILESHARES=("Documents" "Pictures" "Games")
 for f in ${FILESHARES[@]}; do
     echo "$FILESERVER:/mnt/POOL/$f   /home/$USER/$f  nfs defaults    0   0" >> /mnt/etc/fstab
 done

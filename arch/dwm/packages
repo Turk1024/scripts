@@ -1,4 +1,3 @@
-amfora
 dunst
 feh
 gnome-control-center
@@ -6,16 +5,9 @@ gnome-keyring
 gnome-online-accounts
 libxinerama
 lxappearance
-lynx
-materia-gtk-theme
-pamixer
 picom
 polkit-gnome
 sxiv
-termite
-ttf-dejavu
-ttf-joypixels
-ttf-nerd-fonts-symbols
 xautolock
 xorg
 xorg-xinit

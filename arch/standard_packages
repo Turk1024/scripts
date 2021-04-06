@@ -1,4 +1,6 @@
+
 alsa-utils
+amfora
 cronie
 cups
 cups-pdf
@@ -16,10 +18,12 @@ htop
 libnotify
 libvirt
 lsb-release
+lynx
 man
 mpv
 neofetch
 neovim
+pamixer
 pamixer
 pavucontrol
 pulseaudio
@@ -28,6 +32,10 @@ python-pywal
 ranger
 reflector
 rsync
+termite
+ttf-dejavu
+ttf-joypixels
+ttf-nerd-fonts-symbols
 ueberzug
 unzip
 virt-manager
