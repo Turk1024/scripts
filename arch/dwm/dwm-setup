@@ -41,7 +41,7 @@ DTFILE=dwm.desktop
 
 sudo mkdir -p $DTPATH
 sudo touch $DTPATH$DTFILE
-echo "[Desktop Entry]" > sudo tee -a $DTPATH$DTFILE
+echo "[Desktop Entry]" | sudo tee -a $DTPATH$DTFILE
 echo "Encoding=UTF-8" | sudo tee -a $DTPATH$DTFILE
 echo "Name=DWM" | sudo tee -a $DTPATH$DTFILE
 echo "Exec=/usr/local/bin/dwm-start" | sudo tee -a $DTPATH$DTFILE
