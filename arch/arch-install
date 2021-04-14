@@ -232,9 +232,9 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 
 # Set up file share mount points
 FILESERVER="192.168.1.4"
-FILESHARES=("Documents" "Pictures" "Games" "Music" "Videos" "Downloads")
+FILESHARES=("Documents" "Pictures" "Music" "Videos" "Downloads")
 for f in ${FILESHARES[@]}; do
-    echo "$FILESERVER:/mnt/POOL/$f   /home/$USER/$f  nfs defaults    0   0" >> /mnt/etc/fstab
+    echo "$FILESERVER:/srv/storage/$f   /home/$USER/$f  nfs defaults    0   0" >> /mnt/etc/fstab
 done
 
 # Create GRUB options
