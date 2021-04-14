@@ -11,7 +11,7 @@ DOTDIR=$HOME/Documents/Linux/home
 echo
 echo " Getting some standard packages..."
 sudo pacman -Syy > /dev/null
-sudo pacman -S --noconfirm --needed $(cat $SCRIPTSDIR/standard_packages) > /dev/null
+sudo pacman -S --needed $(cat $SCRIPTSDIR/standard_packages) > /dev/null
 
 # Install Yay if it doesn't already exist
 if [[ -f "/usr/bin/yay" ]]; then
