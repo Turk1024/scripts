@@ -210,7 +210,7 @@ done
 
 # Get some information about the system
 if [[ $(lspci | grep NVIDIA | wc -l) != 0 ]]; then
-    if [[ $KERNEL == "linux" ]];then
+    if [[ $KERNEL == "linux" ]]; then
         NVIDIA="xf86-video-nouveau"
     else
         NVIDIA="nvidia-lts nvidia-utils"
@@ -232,7 +232,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 
 # Set up file share mount points
 FILESERVER="192.168.1.4"
-FILESHARES=("Documents" "Pictures" "Music" "Videos" "Downloads")
+FILESHARES=("Documents" "Pictures")
 for f in ${FILESHARES[@]}; do
     echo "$FILESERVER:/srv/storage/$f   /home/$USER/$f  nfs defaults    0   0" >> /mnt/etc/fstab
 done

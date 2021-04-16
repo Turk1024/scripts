@@ -11,7 +11,7 @@ DOTDIR=$HOME/Documents/Linux/home
 echo
 echo " Getting some standard packages..."
 sudo pacman -Syy > /dev/null
-sudo pacman -S --needed $(cat $SCRIPTSDIR/standard_packages) > /dev/null
+sudo pacman -S --needed $(cat $SCRIPTSDIR/standard_packages)
 
 # Install Yay if it doesn't already exist
 if [[ -f "/usr/bin/yay" ]]; then
@@ -34,6 +34,14 @@ echo " Getting some packages from the AUR"
 echo " This could take a bit of time..."
 yay -S --noconfirm --needed $(cat $SCRIPTSDIR/standard_aur_packages)
 clear
+
+#  Check if running in VMware
+if [[ $(lspci | grep VMware | wc -l) != 0 ]]; then
+    echo "Installing VMware Tools..."
+    sudo pacman -S xf86-input-vmmouse xf86-video-vmware open-vm-tools
+    sudo systemctl enable vmtoolsd
+    sudo systemctl enable vmware-vmblock-fuse
+fi
 
 # Copy general dotfiles to .config directory
 echo
