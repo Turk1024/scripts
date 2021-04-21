@@ -1,5 +1,0 @@
-#! /bin/sh
-
-echo Updating pacman mirrorlist...
-reflector --country "United States" --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-echo Done.

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-USER=rick
-HOST=apache
-DB=application
-TODAY=$(date +%F)
-DEST=$HOME/Documents/Linux/sqldump_$TODAY
-
-mysqldump -u $USER -p -h $HOST $DB > $DEST

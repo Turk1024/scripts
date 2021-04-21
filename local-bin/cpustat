@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cpu=$(top -b -n1 | grep Cpu | awk '{ print $2 }')
-printf "$cpu %%\n"

@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cd $HOME/Games/duke3d
-
-eduke32 -usecwd
-rm $HOME/eduke32.log

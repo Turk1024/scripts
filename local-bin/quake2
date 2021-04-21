@@ -1,3 +1,0 @@
-#!/bin/bash
-
-yamagi-quake2 -datadir $HOME/Games/quake2/
