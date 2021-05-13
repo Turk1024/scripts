@@ -1,8 +1,6 @@
 alsa-utils
 amfora
-cronie
 figlet
-freerdp
 git
 gst-libav
 gvfs
@@ -24,7 +22,6 @@ python-pywal
 ranger
 reflector
 rsync
-termite
 ttf-dejavu
 ttf-joypixels
 ttf-nerd-fonts-symbols

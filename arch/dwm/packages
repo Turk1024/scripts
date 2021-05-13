@@ -1,6 +1,4 @@
 dunst
-gnome-control-center
-gnome-online-accounts
 libxinerama
 lxappearance
 picom
@@ -10,6 +8,5 @@ xautolock
 xorg
 xorg-xinit
 xorg-server
-xscreensaver
 zathura
 zathura-pdf-mupdf
