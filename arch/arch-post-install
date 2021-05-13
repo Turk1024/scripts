@@ -61,7 +61,7 @@ cp -r $DOTDIR/.local $HOME/ > /dev/null
 echo
 echo " Setting up some services..."
 sudo timedatectl set-ntp true > /dev/null
-services=("cronie" "cups" "reflector.timer" "libvirtd")
+services=("cronie" "reflector.timer")
 for d in ${services[@]}; do
     sudo systemctl enable $d > /dev/null
 done
