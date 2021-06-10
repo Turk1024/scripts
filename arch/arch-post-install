@@ -13,18 +13,18 @@ echo " Getting some standard packages..."
 sudo pacman -Syy > /dev/null
 sudo pacman -S --needed $(cat $SCRIPTSDIR/standard_packages)
 
-# Install Yay if it doesn't already exist
-if [[ -f "/usr/bin/yay" ]]; then
-    echo " Yay is already installed"
+# Install Paru if it doesn't already exist
+if [[ -f "/usr/bin/paru" ]]; then
+    echo " Paru is already installed"
 else
     echo
     echo " Installing the AUR helper script..."
     echo
-    git clone https://aur.archlinux.org/yay
-    cd yay
+    git clone https://aur.archlinux.org/paru
+    cd paru
     makepkg -si
     cd ..
-    rm -rf yay
+    rm -rf paru
 fi
 
 # Get some standard software from the AUR
@@ -32,7 +32,7 @@ clear
 echo
 echo " Getting some packages from the AUR"
 echo " This could take a bit of time..."
-yay -S --noconfirm --needed $(cat $SCRIPTSDIR/standard_aur_packages)
+paru -S --noconfirm --needed $(cat $SCRIPTSDIR/standard_aur_packages)
 clear
 
 #  Check if running in VMware

@@ -19,7 +19,7 @@ clear
 echo
 echo " Installing the patched version of libxft (libxft-bgra)"
 echo
-yay -S libxft-bgra
+paru -S libxft-bgra
 
 # Compile suckless programs
 echo
